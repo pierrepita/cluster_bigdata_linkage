@@ -1,121 +1,119 @@
-# Cluster Spark + HDFS + Elasticsearch
+# Cluster Big Data Linkage
 
-Este projeto configura um cluster local com os seguintes serviços usando Docker Compose:
+Este repositório configura um cluster de Big Data com Spark Standalone, HDFS e Elasticsearch, empacotado com Docker Compose e pronto para testes e experimentações.
 
-- **Apache Spark (Standalone)**: 1 master, 2 workers
-- **HDFS (Hadoop 3.2.1)**: 1 NameNode que também atua como DataNode
-- **Elasticsearch 8.1.3**
-- **SparkSubmit com SSH**
-
-## Estrutura de Serviços
-
-| Serviço         | Descrição                         | Porta Exposta         |
-|-----------------|-----------------------------------|------------------------|
-| spark-master    | Spark Master                      | 8080                   |
-| spark-worker-1  | Worker Spark                      | 8081                   |
-| spark-worker-2  | Worker Spark                      | 8082                   |
-| hdfs-namenode   | NameNode e DataNode               | 9870                   |
-| elasticsearch   | Elasticsearch (no auth)           | 9200, 9300             |
-| spark-submit    | Node com SSH para submit remoto   | 2222 (SSH)             |
-
----
-
-## Pré-requisitos
-
-- Docker
-- Docker Compose
-- Chave pública SSH para acesso ao SparkSubmit
-
----
-
-## Passo a passo
-
-### 1. Clone o repositório
+## 🔧 Subindo o Cluster
 
 ```bash
-git clone <repo-url>
-cd cluster
+docker compose up -d --build
 ```
 
-### 2. Adicione sua chave pública SSH
-
-Edite o arquivo:
-
-```bash
-vim ssh/authorized_keys
-```
-
-Cole sua chave pública no arquivo.
+Você pode acessar:
+- **Spark Master UI:** http://localhost:8080
+- **Spark Job UI:** http://localhost:4040 (após submissão de job)
+- **Elasticsearch UI:** http://localhost:9200
+- **Acesso SSH aos containers:** `ssh root@localhost -p <port>`, senha `bdlinkage`
 
 ---
 
-### 3. Suba o cluster
+## 🚀 Executando o exemplo PySpark (`spark_pi.py`)
 
 ```bash
-docker-compose up -d
+docker exec -it spark-submit bash
+spark-submit --master spark://spark-master:7077 /root/spark_pi.py
 ```
 
 ---
 
-### 4. Acesse as interfaces web
+## 📦 Trabalhando com o HDFS
 
-- Spark Master: http://localhost:8080
-- Spark Worker 1: http://localhost:8081
-- Spark Worker 2: http://localhost:8082
-- HDFS NameNode: http://localhost:9870
-- Elasticsearch: http://localhost:9200
-
----
-
-### 5. Acesse o node SparkSubmit via SSH
+### Subir arquivo para o HDFS
 
 ```bash
-ssh root@localhost -p 2222
-# senha: sparkpass (caso não use chave)
+docker exec -it spark-master bash
+hdfs dfs -put /opt/spark/README.md /user/root/
+```
+
+### Listar arquivos no HDFS
+
+```bash
+hdfs dfs -ls /user/root/
 ```
 
 ---
 
-### 6. Submeter um job Spark
+## 🔍 Indexando e Buscando no Elasticsearch
 
-Dentro do container `spark-submit`:
+### Indexando um JSON no Elasticsearch
 
 ```bash
-spark-submit --master spark://spark-master:7077 \
-  --class org.apache.spark.examples.SparkPi \
-  /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.0.1.jar 10
+curl -X POST http://localhost:9200/pessoas/_doc/1 \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "nome": "Ana Maria",
+    "idade": 29,
+    "cidade": "Recife"
+  }'
+```
+
+### Busca `must` (todos os critérios precisam ser atendidos)
+
+```bash
+curl -X GET http://localhost:9200/pessoas/_search \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query": {
+      "bool": {
+        "must": [
+          { "match": { "nome": "Ana" }},
+          { "match": { "cidade": "Recife" }}
+        ]
+      }
+    }
+  }'
+```
+
+### Busca `fuzzy` (similaridade de texto)
+
+```bash
+curl -X GET http://localhost:9200/pessoas/_search \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query": {
+      "fuzzy": {
+        "nome": {
+          "value": "Anna",
+          "fuzziness": 1
+        }
+      }
+    }
+  }'
 ```
 
 ---
 
-### 7. Usar o HDFS
-
-Dentro do container com Hadoop:
+## 🛑 Encerrando o Cluster
 
 ```bash
-hdfs dfs -mkdir -p /data
-hdfs dfs -put localfile.csv /data/
+docker compose down
 ```
 
 ---
 
-### 8. Consultar o Elasticsearch
+## 📁 Estrutura do Projeto
 
-Na máquina host:
-
-```bash
-curl http://localhost:9200/_cat/indices?v
+```text
+cluster/
+├── docker-compose.yml
+├── spark/
+│   └── spark-defaults.conf
+├── hadoop/
+│   └── core-site.xml
+│   └── hdfs-site.xml
+├── elasticsearch/
+│   └── elasticsearch.yml
+├── ssh/
+│   └── Dockerfile
+│   └── authorized_keys
+│   └── spark_pi.py
 ```
-
----
-
-## Observações
-
-- Todos os serviços são configurados para não exigir autenticação.
-- Todos os nodes (incluindo o Namenode) são também DataNodes.
-- Memória configurada:
-  - Cada Spark Worker com 4 executores e 2GB por executor
-  - Driver com 3GB
-  - Elasticsearch com 3GB
-
----
