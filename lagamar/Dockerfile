@@ -46,6 +46,9 @@ COPY spark/spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 COPY hadoop/core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
 COPY hadoop/hdfs-site.xml /opt/hadoop/etc/hadoop/hdfs-site.xml
 
+# Copiando codigo spark_pi
+COPY spark_pi.py /root/spark_pi.py
+
 # Configura SSH
 RUN apt-get install -y openssh-server && \
     mkdir -p /var/run/sshd && \
