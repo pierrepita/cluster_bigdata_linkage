@@ -60,7 +60,7 @@ COPY hadoop/hdfs-site.xml /opt/hadoop/etc/hadoop/hdfs-site.xml
 # Configura SSH para acesso entre nós
 RUN apt-get install -y openssh-server && \
     mkdir -p /var/run/sshd && \
-    echo 'root:bdlinkage' | chpasswd && \
+    echo 'root:01' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 EXPOSE 22 8081

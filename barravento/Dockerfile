@@ -43,7 +43,7 @@ COPY jvm.options /opt/elasticsearch/config/jvm.options
 
 # SSH Setup
 RUN mkdir /var/run/sshd && \
-    echo 'root:bdlinkage' | chpasswd && \
+    echo 'root:01' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64

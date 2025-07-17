@@ -52,7 +52,7 @@ COPY spark_pi.py /root/spark_pi.py
 # Configura SSH
 RUN apt-get install -y openssh-server && \
     mkdir -p /var/run/sshd && \
-    echo 'root:bdlinkage' | chpasswd && \
+    echo 'root:01' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # Expõe portas para SSH e Jupyter
