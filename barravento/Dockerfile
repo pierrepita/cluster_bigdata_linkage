@@ -3,9 +3,10 @@
 # Serviços: Spark Master, Namenode, Datanode, Elasticsearch Master
 # Portas Expostas: 7077, 8080, 9000, 9870, 9200
 # Recursos Spark/Elasticsearch: Spark Driver: 2 núcleos, 2GB RAM; ES Master: 2GB JVM
-FROM ubuntu:22.04
+FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
@@ -21,7 +22,7 @@ ENV SPARK_VERSION=3.0.1
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     tar -xzf spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 /opt/spark && \
-    ln -s /opt/spark/bin/* /usr/local/bin/ && \
+#    ln -s /opt/spark/bin/* /usr/local/bin/ && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
 
 # HDFS - Hadoop

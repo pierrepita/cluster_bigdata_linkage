@@ -1,0 +1,8 @@
+cluster.name: bdlinkage-cluster
+node.name: ${HOSTNAME}
+network.host: 0.0.0.0
+discovery.seed_hosts: ["barravento"]
+cluster.initial_master_nodes: ["barravento"]
+node.roles: [ "data", "ingest" ]
+xpack.security.enabled: false
+xpack.security.transport.ssl.enabled: false

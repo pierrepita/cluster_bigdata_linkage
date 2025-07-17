@@ -4,7 +4,7 @@
 # Portas Expostas: 2222 (SSH), 8888 (Jupyter)
 # Recursos Spark/Elasticsearch: Ambiente interativo para submissão de jobs Spark
 
-FROM ubuntu:22.04
+FROM ubuntu:18.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive

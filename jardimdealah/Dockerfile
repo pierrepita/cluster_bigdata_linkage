@@ -3,7 +3,7 @@
 # Serviços: Spark Worker, Datanode, Elasticsearch Worker
 # Portas Expostas: 8081
 # Recursos Spark/Elasticsearch: 2 executores, 2 núcleos cada, 1GB RAM
-FROM ubuntu:22.04
+FROM ubuntu:18.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive
