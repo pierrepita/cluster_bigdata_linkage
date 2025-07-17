@@ -54,3 +54,12 @@ ENV PATH=$PATH:$SPARK_HOME/bin:$HADOOP_HOME/bin
 EXPOSE 22 7077 8080 9200 9870 9000
 
 CMD ["/usr/sbin/sshd", "-D"]
+
+# INICIANDO SERVIÇOS
+# HDFS
+RUN $HADOOP_HOME/bin/hdfs namenode -format -force || true
+RUN $HADOOP_HOME/sbin/start-dfs.sh
+# SPARK MASTER
+RUN $SPARK_HOME/sbin/start-master.sh
+# ELASTIC MASTER
+RUN /opt/elasticsearch/bin/elasticsearch
