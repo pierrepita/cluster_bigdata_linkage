@@ -16,7 +16,7 @@ ENV ELASTIC_VERSION=8.1.3
 
 # Instala dependências básicas, Java, Python 3.6, pip, e ferramentas auxiliares
 RUN apt-get update && \
-    apt-get install -y openjdk-11-jdk wget curl ssh net-tools python3.6 python3-pip unzip gnupg && \
+    apt-get install -y openjdk-11-jdk wget curl ssh net-tools python3.6 python3-pip unzip gnupg netcat && \
     ln -sf /usr/bin/python3.6 /usr/bin/python && \
     ln -sf /usr/bin/python3.6 /usr/bin/python3 && \
     python3.6 -m pip install --upgrade pip && \

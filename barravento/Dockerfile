@@ -11,7 +11,7 @@ ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
-    apt-get install -y openssh-server openjdk-11-jdk curl wget python3.6 python3.6-venv python3.6-distutils python3-pip unzip net-tools && \
+    apt-get install -y openssh-server openjdk-11-jdk curl wget python3.6 python3.6-venv python3.6-distutils python3-pip unzip net-tools netcat && \
     ln -sf /usr/bin/python3.6 /usr/bin/python && \
     ln -sf /usr/bin/python3.6 /usr/bin/python3 && \
     pip3 install pyspark==3.0.1
@@ -63,4 +63,7 @@ ENV HDFS_NAMENODE_USER=root \
     YARN_RESOURCEMANAGER_USER=root \
     YARN_NODEMANAGER_USER=root
 
+COPY entrypoint.sh /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
+ENTRYPOINT ["/root/entrypoint.sh"]
 
