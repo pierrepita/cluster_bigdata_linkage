@@ -35,6 +35,12 @@ RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/had
     mv hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
 
+# O hdfs precisa desta diretiva pra evitar o erro: 
+# "2.063 ERROR: JAVA_HOME is not set and could not be found."
+# COPY set-java-home-hdfs.sh /root/set-java-home-hdfs.sh
+# RUN chmod +x /root/set-java-home-hdfs.sh && /root/set-java-home-hdfs.sh
+RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
+
 # Instala elasticsearch-hadoop jar compatível
 RUN mkdir -p /opt/elasticsearch/lib && \
     wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -P /opt/elasticsearch/lib
