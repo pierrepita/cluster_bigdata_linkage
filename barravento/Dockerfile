@@ -55,10 +55,6 @@ EXPOSE 22 7077 8080 9200 9870 9000
 
 CMD ["/usr/sbin/sshd", "-D"]
 
-# INICIANDO SERVIÇOS
-# HDFS
-# Variáveis para rodar HDFS como root (caso não use usuário específico)
-
 ENV HDFS_NAMENODE_USER=root \
     HDFS_DATANODE_USER=root \
     HDFS_SECONDARYNAMENODE_USER=root \
@@ -67,15 +63,4 @@ ENV HDFS_NAMENODE_USER=root \
     YARN_RESOURCEMANAGER_USER=root \
     YARN_NODEMANAGER_USER=root
 
-# O hdfs precisa desta diretiva pra evitar o erro: 
-# "2.063 ERROR: JAVA_HOME is not set and could not be found."
-# COPY set-java-home-hdfs.sh /root/set-java-home-hdfs.sh
-# RUN chmod +x /root/set-java-home-hdfs.sh && /root/set-java-home-hdfs.sh
-RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
 
-RUN $HADOOP_HOME/bin/hdfs namenode -format -force || true
-RUN $HADOOP_HOME/sbin/start-dfs.sh
-# SPARK MASTER
-RUN $SPARK_HOME/sbin/start-master.sh
-# ELASTIC MASTER
-RUN /opt/elasticsearch/bin/elasticsearch

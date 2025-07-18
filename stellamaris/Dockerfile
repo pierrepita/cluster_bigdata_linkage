@@ -72,3 +72,8 @@ RUN apt-get install -y openssh-server && \
 EXPOSE 22 8081
 
 CMD ["/usr/sbin/sshd", "-D"]
+
+COPY entrypoint.sh /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
+ENTRYPOINT ["/root/entrypoint.sh"]
+

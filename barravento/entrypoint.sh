@@ -1,25 +1,29 @@
 #!/bin/bash
-set -e
+# Criei este entrypoint para garantir que não haverá o problema "ERROR: JAVA_HOME is not set and could not be found."
 
-wait_for_host() {
-  local host="$1"
-  local port="$2"
-  local timeout="${3:-60}"
-  echo "Aguardando $host:$port por até $timeout segundos..."
-  for ((i=0; i<timeout; i++)); do
-    nc -z "$host" "$port" && echo "$host:$port disponível!" && return 0
-    sleep 1
-  done
-  echo "Timeout ao aguardar $host:$port"
-  return 1
-}
+# Precisamos configurar as variáveis de ambiente necessárias
+# TODO: verificar se o java-home precisa ser setado ao chamar o start-dfs.sh
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export HADOOP_HOME=/opt/hadoop
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$SPARK_HOME/bin
 
-echo "Iniciando Namenode..."
-$HADOOP_HOME/bin/hdfs namenode -format -force || true
+# Ativa o serviço SSH
+service ssh start
+
+# Formata o namenode apenas se o diretório ainda não existir
+if [ ! -d "/tmp/hadoop-root/dfs/name" ]; then
+  $HADOOP_HOME/bin/hdfs namenode -format -force
+fi
+
+# Inicia o HDFS
 $HADOOP_HOME/sbin/start-dfs.sh
 
-echo "Iniciando Spark Master..."
+# Inicia o Spark Master
 $SPARK_HOME/sbin/start-master.sh
 
-echo "Iniciando Elasticsearch Master..."
-/opt/elasticsearch/bin/elasticsearch
+# Inicia o Elasticsearch (modo background)
+nohup /opt/elasticsearch/bin/elasticsearch &
+
+# Mantém o container ativo
+tail -f $SPARK_HOME/logs/*.out
