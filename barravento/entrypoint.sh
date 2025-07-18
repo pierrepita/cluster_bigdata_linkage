@@ -23,7 +23,48 @@ $HADOOP_HOME/sbin/start-dfs.sh
 $SPARK_HOME/sbin/start-master.sh
 
 # Inicia o Elasticsearch (modo background)
-nohup /opt/elasticsearch/bin/elasticsearch &
+## Evitando o erro: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+echo "vm.max_map_count=262144" | tee -a /etc/sysctl.conf
+
+## Cria arquivo de configuração adequado
+cat <<EOF > /opt/elasticsearch/config/elasticsearch.yml
+cluster.name: "es-cluster"
+node.name: "barravento"
+node.roles: [ master ]
+network.host: 0.0.0.0
+http.port: 9200
+discovery.seed_hosts: []
+cluster.initial_master_nodes: ["barravento"]
+
+xpack.security.enabled: false
+xpack.security.transport.ssl.enabled: false
+xpack.security.http.ssl.enabled: false
+EOF
+
+# Agora é importante esvaziar os ficheiros
+echo 'export PATH=$PATH:/opt/elasticsearch/bin' >> /home/elastic/.bashrc
+su -s /bin/bash elastic -c "elasticsearch-keystore remove xpack.security.transport.ssl.keystore.secure_password"
+su -s /bin/bash elastic -c "elasticsearch-keystore remove xpack.security.transport.ssl.truststore.secure_password"
+su -s /bin/bash elastic -c "elasticsearch-keystore remove xpack.security.http.ssl.keystore.secure_password"
+
+## Criando arquivos e dando a permissão necessária 
+chown -R elastic:elastic /opt/elasticsearch/
+## Evitando o erro: "elasticsearch.keystore is not a readable regular file"
+chmod 600 /opt/elasticsearch/config/elasticsearch.keystore
+## Evitando o erro: "AccessDeniedException: /opt/elasticsearch/config/jvm.options.d"
+chmod 700 /opt/elasticsearch/config/jvm.options.d
+## Evitando o erro: "AccessDeniedException: /opt/elasticsearch/config/certs"
+chmod 700 /opt/elasticsearch/config/certs
+
+## É necessário informar o JAVA_HOME garantir a execução do es
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /home/elastic/.bashrc
+## Aqui, preciso evitar o erro: "could not find java in bundled JDK at /opt/elasticsearch/jdk/bin/java"
+## Parece que, por algum motivo, o es procura seu próprio Java
+echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /home/elastic/.bashrc
+## Pecar pelo excesso não é tão ruim: 
+nohup su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 /opt/elasticsearch/bin/elasticsearch" &
+
+
 
 # Mantém o container ativo
 tail -f $SPARK_HOME/logs/*.out

@@ -33,6 +33,12 @@ RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/had
     rm hadoop-${HADOOP_VERSION}.tar.gz
 
 # Elasticsearch
+## O ES demanda instalação 17 do Java
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk
+## É necessário criar um usuário elastic para iniciar o elastic
+RUN groupadd -g 1000 elastic && useradd -u 1000 -g elastic -m elastic
+## Agora é só baixar os instaladores 
 RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.1.3-linux-x86_64.tar.gz && \
     tar -xzf elasticsearch-8.1.3-linux-x86_64.tar.gz && \
     mv elasticsearch-8.1.3 /opt/elasticsearch && \
