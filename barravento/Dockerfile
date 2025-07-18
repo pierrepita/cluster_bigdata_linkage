@@ -51,12 +51,24 @@ ENV HADOOP_HOME=/opt/hadoop
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin:$HADOOP_HOME/bin
 
+
+
+
 EXPOSE 22 7077 8080 9200 9870 9000
 
 CMD ["/usr/sbin/sshd", "-D"]
 
 # INICIANDO SERVIÇOS
 # HDFS
+# Variáveis para rodar HDFS como root (caso não use usuário específico)
+ENV HDFS_NAMENODE_USER=root \
+    HDFS_DATANODE_USER=root \
+    HDFS_SECONDARYNAMENODE_USER=root \
+    HDFS_JOURNALNODE_USER=root \
+    HDFS_ZKFC_USER=root \
+    YARN_RESOURCEMANAGER_USER=root \
+    YARN_NODEMANAGER_USER=root
+
 RUN $HADOOP_HOME/bin/hdfs namenode -format -force || true
 RUN $HADOOP_HOME/sbin/start-dfs.sh
 # SPARK MASTER
