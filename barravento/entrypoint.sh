@@ -62,9 +62,7 @@ echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /home/elastic/.bas
 ## Parece que, por algum motivo, o es procura seu próprio Java
 echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /home/elastic/.bashrc
 ## Pecar pelo excesso não é tão ruim: 
-nohup su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 /opt/elasticsearch/bin/elasticsearch" &
-
-
+nohup su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 /opt/elasticsearch/bin/elasticsearch" &
 
 # Mantém o container ativo
 tail -f $SPARK_HOME/logs/*.out

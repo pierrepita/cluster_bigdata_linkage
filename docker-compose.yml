@@ -11,22 +11,16 @@ services:
       - "9000:9000"
     networks:
       - cluster_net
-    sysctls:
-      - vm.max_map_count=262144
   jardimdealah:
     build: ./jardimdealah
     container_name: jardimdealah
     networks:
       - cluster_net
-    sysctls:
-      - vm.max_map_count=262144
   stellamaris:
     build: ./stellamaris
     container_name: stellamaris
     networks:
       - cluster_net
-    sysctls:
-      - vm.max_map_count=262144
   lagamar:
     build: ./lagamar
     container_name: lagamar
@@ -35,8 +29,7 @@ services:
       - "2222:22"
     networks:
       - cluster_net
-    sysctls:
-      - vm.max_map_count=262144
+
 networks:
   cluster_net:
     driver: bridge
