@@ -16,8 +16,22 @@ if [ ! -d "/tmp/hadoop-root/dfs/name" ]; then
   $HADOOP_HOME/bin/hdfs namenode -format -force
 fi
 
+## Criando arquivos e dando a permissão necessária 
+chown -R hadoop:hadoop /opt/hadoop/
+
+## Definindo o JAVA_HOME e HADOOP_HOME para o usuário hadoop
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/hadoop.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /home/hadoop.bashrc
+
+# permitindo a existencia do diretorio temporario hadoop
+mkdir -p /tmp/hadoop-hadoop/dfs/name
+chown -R hadoop:hadoop /tmp/hadoop-hadoop/
+
+
 # Inicia o HDFS
-$HADOOP_HOME/sbin/start-dfs.sh
+su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode" &
+su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &
+su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs secondarynamenode" &
 
 # Inicia o Spark Master
 $SPARK_HOME/sbin/start-master.sh

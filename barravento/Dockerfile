@@ -26,6 +26,9 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
 
 # HDFS - Hadoop
+## É necessário criar um usuário hadoop para iniciar o hadoop
+RUN groupadd -g 2000 hadoop && useradd -u 2000 -g hadoop -m hadoop
+
 ENV HADOOP_VERSION=3.3.6
 RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz && \
@@ -61,13 +64,13 @@ EXPOSE 22 7077 8080 9200 9870 9000
 
 CMD ["/usr/sbin/sshd", "-D"]
 
-ENV HDFS_NAMENODE_USER=root \
-    HDFS_DATANODE_USER=root \
-    HDFS_SECONDARYNAMENODE_USER=root \
-    HDFS_JOURNALNODE_USER=root \
-    HDFS_ZKFC_USER=root \
-    YARN_RESOURCEMANAGER_USER=root \
-    YARN_NODEMANAGER_USER=root
+ENV HDFS_NAMENODE_USER=hadoop \
+    HDFS_DATANODE_USER=hadoop \
+    HDFS_SECONDARYNAMENODE_USER=hadoop \
+    HDFS_JOURNALNODE_USER=hadoop \
+    HDFS_ZKFC_USER=hadoop \
+    YARN_RESOURCEMANAGER_USER=hadoop \
+    YARN_NODEMANAGER_USER=hadoop
 
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
