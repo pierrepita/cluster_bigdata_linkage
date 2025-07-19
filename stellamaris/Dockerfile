@@ -41,10 +41,19 @@ RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/had
 RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
 
 # Instala Elasticsearch
+## O ES demanda instalação 17 do Java
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk
+## É necessário criar um usuário elastic para iniciar o elastic
+RUN groupadd -g 1000 elastic && useradd -u 1000 -g elastic -m elastic
+# Elasticsearch
 RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz && \
     tar -xzf elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz && \
     mv elasticsearch-${ELASTIC_VERSION} /opt/elasticsearch && \
     rm elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz
+
+COPY elasticsearch/elasticsearch.yml /opt/elasticsearch/config/elasticsearch.yml
+COPY elasticsearch/jvm.options /opt/elasticsearch/config/jvm.options
 
 # Instala elasticsearch-hadoop jar compatível
 RUN mkdir -p /opt/elasticsearch/lib && \
