@@ -39,6 +39,8 @@ cluster.initial_master_nodes: ["barravento"]
 xpack.security.enabled: false
 xpack.security.transport.ssl.enabled: false
 xpack.security.http.ssl.enabled: false
+
+ingest.geoip.downloader.enabled: false
 EOF
 
 # Agora é importante esvaziar os ficheiros

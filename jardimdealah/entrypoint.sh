@@ -25,7 +25,32 @@ until nc -z barravento 7077; do
   sleep 2
 done
 
+# Inicia o Spark Worker e aponta para o Spark Master
+$SPARK_HOME/sbin/start-slave.sh spark://barravento:7077
+
 # Sobe o Elasticsearch como data node
+# Inicia o Elasticsearch (modo background)
+## Evitando o erro: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+echo "vm.max_map_count=262144" | tee -a /etc/sysctl.conf
+
+## Cria arquivo de configuração adequado
+cat <<EOF > /opt/elasticsearch/config/elasticsearch.yml
+cluster.name: es-cluster
+node.name: jardimdealah
+node.roles: [data]
+network.host: 0.0.0.0
+discovery.seed_hosts: ["barravento"]
+cluster.initial_master_nodes: ["barravento"]
+xpack.security.enabled: false
+ingest.geoip.downloader.enabled: false
+EOF
+
+# Agora é importante esvaziar os ficheiros
+echo 'export PATH=$PATH:/opt/elasticsearch/bin' >> /home/elastic/.bashrc
+su -s /bin/bash elastic -c "elasticsearch-keystore remove xpack.security.transport.ssl.keystore.secure_password"
+su -s /bin/bash elastic -c "elasticsearch-keystore remove xpack.security.transport.ssl.truststore.secure_password"
+su -s /bin/bash elastic -c "elasticsearch-keystore remove xpack.security.http.ssl.keystore.secure_password"
+
 ## Evitando o erro: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
 ## Criando arquivos e dando a permissão necessária 
 chown -R elastic:elastic /opt/elasticsearch/

@@ -1,7 +1,7 @@
 # Conteúdo de exemplo para jvm.options no nó jardimdealah
 # Heap Size
--Xms2g
--Xmx2g
+-Xms1g
+-Xmx1g
 
 # GC Settings - Use G1GC (bom equilíbrio entre Throughput e Pausa)
 -XX:+UseG1GC

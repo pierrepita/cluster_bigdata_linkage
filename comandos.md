@@ -13,3 +13,10 @@ docker compose up -d
 
 # 5: resetar um node
 docker restart barravento
+
+
+
+# 7: Elasticsearch
+## Checa nodes online
+docker exec -it barravento bash
+root@barravento:/# curl -s http://localhost:9200/_cat/nodes?v
