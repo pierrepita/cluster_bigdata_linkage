@@ -1,5 +1,7 @@
-# core-site.xml for HDFS
-<property>
-  <name>fs.defaultFS</name>
-  <value>hdfs://barravento:9000</value>
-</property>
+<!-- core-site.xml for HDFS -->
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://barravento:9000</value>
+  </property>
+</configuration>

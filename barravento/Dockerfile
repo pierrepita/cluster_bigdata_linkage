@@ -8,6 +8,11 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 
+# Versões
+ENV ELASTIC_VERSION=8.1.3 \
+    SPARK_VERSION=3.0.1 \
+    HADOOP_VERSION=3.3.6 
+
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
@@ -18,7 +23,7 @@ RUN apt-get update && \
 
 # Instalação do Spark
 # Garantindo versão 3.0.1 do Spark para versão homologada do linkage CIDACS-RL e Atyimo
-ENV SPARK_VERSION=3.0.1
+
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     tar -xzf spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 /opt/spark && \
@@ -29,11 +34,13 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 ## É necessário criar um usuário hadoop para iniciar o hadoop
 RUN groupadd -g 2000 hadoop && useradd -u 2000 -g hadoop -m hadoop
 
-ENV HADOOP_VERSION=3.3.6
 RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz && \
     mv hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
+
+COPY core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
+COPY hdfs-site.xml /opt/hadoop/etc/hadoop/hdfs-site.xml
 
 # Elasticsearch
 ## O ES demanda instalação 17 do Java
@@ -42,13 +49,17 @@ RUN apt-get update && \
 ## É necessário criar um usuário elastic para iniciar o elastic
 RUN groupadd -g 1000 elastic && useradd -u 1000 -g elastic -m elastic
 ## Agora é só baixar os instaladores 
-RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.1.3-linux-x86_64.tar.gz && \
-    tar -xzf elasticsearch-8.1.3-linux-x86_64.tar.gz && \
-    mv elasticsearch-8.1.3 /opt/elasticsearch && \
-    rm elasticsearch-8.1.3-linux-x86_64.tar.gz
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz && \
+    tar -xzf elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz && \
+    mv elasticsearch-${ELASTIC_VERSION} /opt/elasticsearch && \
+    rm elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz
 
 COPY elasticsearch.yml /opt/elasticsearch/config/elasticsearch.yml
 COPY jvm.options /opt/elasticsearch/config/jvm.options
+
+# Baixando o conector elasticsearch-hadoop para que o Spark possa interagir corretamente com o Elasticsearch
+# Isso deve permitir um melhor controle de versão local. 
+RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -o /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
 
 # SSH Setup
 RUN mkdir /var/run/sshd && \

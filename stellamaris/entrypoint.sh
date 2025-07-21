@@ -14,8 +14,54 @@ service ssh start
 echo "export JAVA_HOME=${JAVA_HOME}" >> /etc/profile
 source /etc/profile
 
+## Criando arquivos e dando a permissão necessária 
+chown -R hadoop:hadoop /opt/hadoop/
+
+## Definindo o JAVA_HOME e HADOOP_HOME para o usuário hadoop
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/hadoop/.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /home/hadoop/.bashrc
+
+# permitindo a existencia do diretorio temporario hadoop
+mkdir -p /tmp/hadoop-hadoop/dfs/name
+mkdir -p /opt/hadoop/hdfs/namenode
+mkdir -p /opt/hadoop/hdfs/datanode
+chown -R hadoop:hadoop /tmp/hadoop-hadoop/
+chown -R hadoop:hadoop /opt/hadoop
+
+# Por algum motivo não funcionou copiar o arquivo para dentro do docker
+# TODO: A suspeita é que arquivos padão são gerados na instalação
+cat <<EOF > /opt/hadoop/etc/hadoop/core-site.xml
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://barravento:9000</value>
+  </property>
+</configuration>
+EOF
+
+# Por algum motivo não funcionou copiar o arquivo para dentro do docker
+# TODO: A suspeita é que arquivos padão são gerados na instalação
+cat <<EOF > /opt/hadoop/etc/hadoop/hdfs-site.xml
+<configuration>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:/opt/hadoop/hdfs/datanode</value>
+  </property>
+
+  <property>
+    <name>dfs.replication</name>
+    <value>2</value>
+  </property>
+
+  <property>
+    <name>dfs.permissions</name>
+    <value>false</value>
+  </property>
+</configuration>
+EOF
+
 # Inicia o DataNode
-$HADOOP_HOME/bin/hdfs --daemon start datanode
+su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &
 
 
 # Sobe os serviços do Spark Worker e Elasticsearch

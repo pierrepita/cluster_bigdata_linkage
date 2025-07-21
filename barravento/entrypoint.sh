@@ -12,26 +12,72 @@ export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$SPARK_HOME/bin
 service ssh start
 
 # Formata o namenode apenas se o diretório ainda não existir
-if [ ! -d "/tmp/hadoop-root/dfs/name" ]; then
-  $HADOOP_HOME/bin/hdfs namenode -format -force
-fi
+#if [ ! -d "/tmp/hadoop-root/dfs/name" ]; then
+#  $HADOOP_HOME/bin/hdfs namenode -format -force
+#fi
 
 ## Criando arquivos e dando a permissão necessária 
 chown -R hadoop:hadoop /opt/hadoop/
 
 ## Definindo o JAVA_HOME e HADOOP_HOME para o usuário hadoop
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/hadoop.bashrc
-echo 'export HADOOP_HOME=/opt/hadoop' >> /home/hadoop.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/hadoop/.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /home/hadoop/.bashrc
 
 # permitindo a existencia do diretorio temporario hadoop
 mkdir -p /tmp/hadoop-hadoop/dfs/name
+mkdir -p /opt/hadoop/hdfs/namenode
+mkdir -p /opt/hadoop/hdfs/datanode
 chown -R hadoop:hadoop /tmp/hadoop-hadoop/
+chown -R hadoop:hadoop /opt/hadoop
+
+# Por algum motivo não funcionou copiar o arquivo para dentro do docker
+# TODO: A suspeita é que arquivos padão são gerados na instalação
+cat <<EOF > /opt/hadoop/etc/hadoop/core-site.xml
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://barravento:9000</value>
+  </property>
+</configuration>
+EOF
+
+# Por algum motivo não funcionou copiar o arquivo para dentro do docker
+# TODO: A suspeita é que arquivos padão são gerados na instalação
+cat <<EOF > /opt/hadoop/etc/hadoop/hdfs-site.xml
+<configuration>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:/opt/hadoop/hdfs/namenode</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:/opt/hadoop/hdfs/datanode</value>
+  </property>
+
+  <property>
+    <name>dfs.replication</name>
+    <value>2</value>
+  </property>
+
+  <property>
+    <name>dfs.permissions</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.rpc-address</name>
+    <value>barravento:9000</value>
+  </property>
+</configuration>
+EOF
 
 
 # Inicia o HDFS
-su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode" &
-su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &
-su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs secondarynamenode" &
+su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode -format -force" &
+su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode" &
+su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &
+su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs secondarynamenode" &
 
 # Inicia o Spark Master
 $SPARK_HOME/sbin/start-master.sh

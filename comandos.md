@@ -1,9 +1,9 @@
 # Comandos: 
 # 1: rebuild das imagens mesmo que nada tenha mudado
-docker-compose build --no-cache
-docker-compose up --force-recreate --remove-orphans
+docker compose build --no-cache
+docker compose up --force-recreate --remove-orphans
 # 2: remove os contêineres, volumes e órfãos
-docker-compose down --volumes --remove-orphans
+docker compose down --volumes --remove-orphans
 
 # 3: subir depois do build (mas atualizando)
 docker compose up -d --build
@@ -20,3 +20,8 @@ docker restart barravento
 ## Checa nodes online
 docker exec -it barravento bash
 root@barravento:/# curl -s http://localhost:9200/_cat/nodes?v
+
+
+http://localhost:8888/tree?
+
+http://localhost:9870/dfshealth.html#tab-datanode

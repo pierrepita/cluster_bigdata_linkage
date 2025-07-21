@@ -29,16 +29,13 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
 
 # Instala Hadoop
+## É necessário criar um usuário hadoop para iniciar o hadoop
+RUN groupadd -g 2000 hadoop && useradd -u 2000 -g hadoop -m hadoop
+
 RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xzf hadoop-${HADOOP_VERSION}.tar.gz && \
     mv hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
-
-# O hdfs precisa desta diretiva pra evitar o erro: 
-# "2.063 ERROR: JAVA_HOME is not set and could not be found."
-# COPY set-java-home-hdfs.sh /root/set-java-home-hdfs.sh
-# RUN chmod +x /root/set-java-home-hdfs.sh && /root/set-java-home-hdfs.sh
-RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
 
 # Instala Elasticsearch
 ## O ES demanda instalação 17 do Java
@@ -60,10 +57,14 @@ RUN mkdir -p /opt/elasticsearch/lib && \
     wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -P /opt/elasticsearch/lib
 
 # Configura memória para Elasticsearch
-RUN echo "-Xms2g\n-Xmx2g" > /opt/elasticsearch/config/jvm.options.d/memory.options
+RUN echo "-Xms1g\n-Xmx1g" > /opt/elasticsearch/config/jvm.options.d/memory.options
 
 # Configura Elasticsearch como nó worker
 COPY elasticsearch/elasticsearch.yml /opt/elasticsearch/config/elasticsearch.yml
+
+# Baixando o conector elasticsearch-hadoop para que o Spark possa interagir corretamente com o Elasticsearch
+# Isso deve permitir um melhor controle de versão local. 
+RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -o /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
 
 # Configura Spark
 COPY spark/spark-defaults.conf /opt/spark/conf/spark-defaults.conf
