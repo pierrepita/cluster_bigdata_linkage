@@ -5,6 +5,7 @@ from pyspark.sql import SparkSession
 # e como enviar os dados pra lá.
 spark = SparkSession.builder \
     .appName("IndexDatabaseB") \
+    .config("spark.jars.packages", "org.elasticsearch:elasticsearch-spark-30_2.12:8.1.3") \
     .config("spark.es.nodes", "barravento") \
     .config("spark.es.port", "9200") \
     .config("spark.es.nodes.wan.only", "false") \

@@ -31,7 +31,8 @@ spark-submit --master spark://barravento:7077 /root/spark_pi.py
 
 # 9: Testando HDFS
 ## Colocando os dados no HDFS
-hdfs dfs -mkdir /sandbox/
+hdfs dfs -mkdir /spark-logs
+hdfs dfs -mkdir /sandbox
 hdfs dfs -put /root/sandbox-tests/01-databaseA.csv /sandbox/
 hdfs dfs -put /root/sandbox-tests/02-databaseB.csv /sandbox/
 
@@ -68,4 +69,4 @@ curl -X POST "http://barravento:9200/dbb/_search" -H 'Content-Type: application/
 }
 '
 
-curl -X POST "http://barravento:9200/dbb/_search" -H 'Content-Type: application/json' -f "sandbox-tests/consulta-es.json"
+curl -X POST "http://barravento:9200/dbb/_search" -H 'Content-Type: application/json' -f 'sandbox-tests/consulta-es.json'

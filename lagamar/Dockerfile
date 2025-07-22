@@ -29,6 +29,9 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 /opt/spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
 
+COPY spark/spark-env.sh /opt/spark/conf/spark-env.sh
+RUN chmod +x /opt/spark/conf/spark-env.sh
+
 # Instala Hadoop
 ## É necessário criar um usuário hadoop para iniciar o hadoop
 RUN groupadd -g 2000 hadoop && useradd -u 2000 -g hadoop -m hadoop
@@ -69,7 +72,6 @@ COPY sandbox-tests/02-databaseB.csv /root/sandbox-tests/02-databaseB.csv
 COPY sandbox-tests/indexa-dbB-spark-es.py /root/sandbox-tests/indexa-dbB-spark-es.py
 COPY sandbox-tests/consulta-es.json /root/sandbox-tests/consulta-es.json
 COPY sandbox-tests/indexa-dbB-spark-es.ipynb /root/sandbox-tests/indexa-dbB-spark-es.ipynb
-# COPY sandbox-tests/02-databaseB.csv /root/sandbox-tests/02-databaseB.csv
 
 # Expõe portas para SSH e Jupyter
 EXPOSE 2222 8888

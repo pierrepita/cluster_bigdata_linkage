@@ -39,7 +39,6 @@ echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin' >> /root/.bashrc
 source /root/.bashrc
 
-
 # permitindo a existencia do diretorio temporario hadoop
 mkdir -p /tmp/hadoop-hadoop/dfs/name
 mkdir -p /opt/hadoop/hdfs/namenode

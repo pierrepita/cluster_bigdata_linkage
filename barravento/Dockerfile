@@ -27,8 +27,12 @@ RUN apt-get update && \
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     tar -xzf spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 /opt/spark && \
-#    ln -s /opt/spark/bin/* /usr/local/bin/ && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
+
+COPY spark-env.sh /opt/spark/conf/spark-env.sh
+RUN chmod +x /opt/spark/conf/spark-env.sh
+COPY spark-defaults.conf /opt/spark/conf/spark-defaults.conf
+
 
 # HDFS - Hadoop
 ## É necessário criar um usuário hadoop para iniciar o hadoop

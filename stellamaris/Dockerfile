@@ -28,6 +28,9 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 /opt/spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
 
+COPY spark/spark-env.sh /opt/spark/conf/spark-env.sh
+RUN chmod +x /opt/spark/conf/spark-env.sh
+
 # Instala Hadoop
 ## É necessário criar um usuário hadoop para iniciar o hadoop
 RUN groupadd -g 2000 hadoop && useradd -u 2000 -g hadoop -m hadoop
