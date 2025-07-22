@@ -62,8 +62,12 @@ RUN apt-get install -y openssh-server && \
     echo 'root:01' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
+# Incluindo as bases de dados de teste de linkage
+COPY databases_rl_test/01-databaseA.csv /root/01-databaseA.csv
+COPY databases_rl_test/02-databaseB.csv /root/02-databaseB.csv
+
 # Expõe portas para SSH e Jupyter
 EXPOSE 2222 8888
 
 # Comando de entrada com Jupyter e SSH em paralelo
-CMD service ssh start && jupyter notebook --ip=0.0.0.0 --port=8888 --NotebookApp.token='' --allow-root --no-browser
+CMD service ssh start && jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --no-browser --notebook-dir=/root

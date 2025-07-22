@@ -77,7 +77,6 @@ EOF
 su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode -format -force" &
 su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode" &
 su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &
-su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs secondarynamenode" &
 
 # Inicia o Spark Master
 $SPARK_HOME/sbin/start-master.sh

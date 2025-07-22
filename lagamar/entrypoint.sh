@@ -1,6 +1,18 @@
 #!/bin/bash
 set -e
 
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export HADOOP_HOME=/opt/hadoop
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin
+
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin' >> /root/.bashrc
+
 wait_for_host() {
   local host="$1"
   local port="$2"
@@ -17,7 +29,7 @@ wait_for_host() {
 wait_for_host barravento 7077
 
 echo "Iniciando Jupyter Notebook..."
-jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --no-browser &
+jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --no-browser --notebook-dir=/root &
 
 echo "Aguardando Spark disponível para submissão..."
 wait_for_host barravento 7077
