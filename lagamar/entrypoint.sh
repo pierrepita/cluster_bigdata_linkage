@@ -1,17 +1,11 @@
 #!/bin/bash
 set -e
 
-
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 export HADOOP_HOME=/opt/hadoop
 export SPARK_HOME=/opt/spark
 export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin
-
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
-echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
-echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
-echo 'export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin' >> /root/.bashrc
 
 wait_for_host() {
   local host="$1"
@@ -34,14 +28,17 @@ jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --
 echo "Aguardando Spark disponível para submissão..."
 wait_for_host barravento 7077
 
-## Criando arquivos e dando a permissão necessária 
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/hadoop/.bashrc
-echo 'export HADOOP_HOME=/opt/hadoop' >> /home/hadoop/.bashrc
-
-
 ## Definindo o JAVA_HOME e HADOOP_HOME para o usuário hadoop
+# Garantindo que as variaveis de ambiente estarão no .bashrc
 echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/hadoop.bashrc
 echo 'export HADOOP_HOME=/opt/hadoop' >> /home/hadoop.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
+echo 'export SPARK_HOME=/opt/spark' >> /root/.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin' >> /root/.bashrc
+source /root/.bashrc
+
 
 # permitindo a existencia do diretorio temporario hadoop
 mkdir -p /tmp/hadoop-hadoop/dfs/name
@@ -81,6 +78,8 @@ cat <<EOF > /opt/hadoop/etc/hadoop/hdfs-site.xml
   </property>
 </configuration>
 EOF
+
+
 
 # Inicia o DataNode
 su -s /bin/bash elastic -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &

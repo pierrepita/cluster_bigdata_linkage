@@ -74,8 +74,20 @@ EOF
 
 
 # Inicia o HDFS
-su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode -format -force" &
+# Formata o NameNode 
+su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode -format -force"
+
+# Inicia o NameNode em background (em algumas execuções, o namenode não está subindo e eu não entendo o motivo). 
 su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs namenode" &
+
+# Então estou obrigando o datanode a esperar (porta 9000 aberta)
+echo "Aguardando o NameNode iniciar na porta 9000..."
+while ! nc -z barravento 9000; do
+  sleep 2
+done
+echo "NameNode iniciado, indo para o Datanode!"
+
+# Inicia o DataNode
 su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HADOOP_HOME/bin/hdfs datanode" &
 
 # Inicia o Spark Master

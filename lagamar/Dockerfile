@@ -54,7 +54,7 @@ COPY hadoop/core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
 COPY hadoop/hdfs-site.xml /opt/hadoop/etc/hadoop/hdfs-site.xml
 
 # Copiando codigo spark_pi
-COPY spark_pi.py /root/spark_pi.py
+COPY sandbox-tests/spark_pi.py /root/sandbox-tests/spark_pi.py
 
 # Configura SSH
 RUN apt-get install -y openssh-server && \
@@ -62,9 +62,13 @@ RUN apt-get install -y openssh-server && \
     echo 'root:01' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
-# Incluindo as bases de dados de teste de linkage
-COPY databases_rl_test/01-databaseA.csv /root/01-databaseA.csv
-COPY databases_rl_test/02-databaseB.csv /root/02-databaseB.csv
+# Materiais necessários para os testes da infra
+# RUN mkdir /root/sandbox-tests
+COPY sandbox-tests/01-databaseA.csv /root/sandbox-tests/01-databaseA.csv
+COPY sandbox-tests/02-databaseB.csv /root/sandbox-tests/02-databaseB.csv
+COPY sandbox-tests/indexa-dbB-spark-es.py /root/sandbox-tests/indexa-dbB-spark-es.py
+COPY sandbox-tests/consulta-es.json /root/sandbox-tests/consulta-es.json
+# COPY sandbox-tests/02-databaseB.csv /root/sandbox-tests/02-databaseB.csv
 
 # Expõe portas para SSH e Jupyter
 EXPOSE 2222 8888

@@ -52,9 +52,9 @@ RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${EL
 COPY elasticsearch/elasticsearch.yml /opt/elasticsearch/config/elasticsearch.yml
 COPY elasticsearch/jvm.options /opt/elasticsearch/config/jvm.options
 
-# Instala elasticsearch-hadoop jar compatível
-RUN mkdir -p /opt/elasticsearch/lib && \
-    wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -P /opt/elasticsearch/lib
+# Baixando o conector elasticsearch-hadoop para que o Spark possa interagir corretamente com o Elasticsearch
+# Isso deve permitir um melhor controle de versão local. 
+RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -o /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
 
 # Configura memória para Elasticsearch
 RUN echo "-Xms1g\n-Xmx1g" > /opt/elasticsearch/config/jvm.options.d/memory.options
@@ -86,4 +86,3 @@ CMD ["/usr/sbin/sshd", "-D"]
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
 ENTRYPOINT ["/root/entrypoint.sh"]
-

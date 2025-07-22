@@ -1,0 +1,23 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "nome": "Maria"
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "cidade": {
+              "query": "Salvador",
+              "fuzziness": "AUTO"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
