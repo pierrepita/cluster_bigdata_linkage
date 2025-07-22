@@ -31,10 +31,10 @@ spark-submit --master spark://barravento:7077 /root/spark_pi.py
 
 # 9: Testando HDFS
 ## Colocando os dados no HDFS
-hdfs dfs -mkdir /spark-logs
-hdfs dfs -mkdir /sandbox
-hdfs dfs -put /root/sandbox-tests/01-databaseA.csv /sandbox/
-hdfs dfs -put /root/sandbox-tests/02-databaseB.csv /sandbox/
+# hdfs dfs -mkdir /spark-logs
+# hdfs dfs -mkdir /sandbox
+/opt/hadoop/bin/hdfs dfs -put /root/sandbox-tests/01-databaseA.csv /sandbox/
+/opt/hadoop/bin/hdfs dfs -put /root/sandbox-tests/02-databaseB.csv /sandbox/
 
 spark-submit --master spark://barravento:7077 /root/sandbox-tests/spark_pi.py
 # Por algum motivo, o comando abaixo não está funcionando
