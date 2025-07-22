@@ -68,6 +68,7 @@ COPY sandbox-tests/01-databaseA.csv /root/sandbox-tests/01-databaseA.csv
 COPY sandbox-tests/02-databaseB.csv /root/sandbox-tests/02-databaseB.csv
 COPY sandbox-tests/indexa-dbB-spark-es.py /root/sandbox-tests/indexa-dbB-spark-es.py
 COPY sandbox-tests/consulta-es.json /root/sandbox-tests/consulta-es.json
+COPY sandbox-tests/indexa-dbB-spark-es.ipynb /root/sandbox-tests/indexa-dbB-spark-es.ipynb
 # COPY sandbox-tests/02-databaseB.csv /root/sandbox-tests/02-databaseB.csv
 
 # Expõe portas para SSH e Jupyter
