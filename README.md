@@ -50,6 +50,7 @@ docker compose version
 ### 1.6 Permitir que um usuário comum use Docker
 
 ```bash
+newgrp docker
 sudo usermod -aG docker $USER
 ```
 
