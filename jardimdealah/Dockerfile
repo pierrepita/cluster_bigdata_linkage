@@ -18,7 +18,6 @@ ENV ELASTIC_VERSION=8.1.3
 RUN apt-get update && \
     apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl ssh net-tools python3 python3-pip unzip gnupg netcat && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    ln -sf /usr/bin/python3 /usr/bin/python3 && \
     python3 -m pip install --upgrade pip && \
     pip3 install pyspark==3.0.1
 
