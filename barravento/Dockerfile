@@ -3,7 +3,7 @@
 # Serviços: Spark Master, Namenode, Datanode, Elasticsearch Master
 # Portas Expostas: 7077, 8080, 9000, 9870, 9200
 # Recursos Spark/Elasticsearch: Spark Driver: 2 núcleos, 2GB RAM; ES Master: 2GB JVM
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
@@ -16,10 +16,14 @@ ENV ELASTIC_VERSION=8.1.3 \
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
-    apt-get install -y openssh-server openjdk-11-jdk curl wget python3.6 python3.6-venv python3.6-distutils python3-pip unzip net-tools netcat && \
-    ln -sf /usr/bin/python3.6 /usr/bin/python && \
-    ln -sf /usr/bin/python3.6 /usr/bin/python3 && \
+    apt-get install -y software-properties-common git p7zip-full nano openssh-server openjdk-11-jdk curl wget python3 python3-venv python3-distutils python3-pip unzip net-tools netcat && \
+    ln -sf /usr/bin/python3 /usr/bin/python && \
+    ln -sf /usr/bin/python3 /usr/bin/python3 && \
     pip3 install pyspark==3.0.1
+
+# Copiando o arquivo que orienta quais pacotes python devem ser instalados
+COPY requirements_python.txt /root/requirements_python.txt
+RUN pip3 install --no-cache-dir -r /root/requirements_python.txt
 
 # Instalação do Spark
 # Garantindo versão 3.0.1 do Spark para versão homologada do linkage CIDACS-RL e Atyimo

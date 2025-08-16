@@ -9,16 +9,22 @@ services:
       - "9200:9200"
       - "9870:9870"
       - "9000:9000"
+    volumes:
+      - ./requirements_python.txt:/root/requirements_python.txt:ro
     networks:
       - cluster_net
   jardimdealah:
     build: ./jardimdealah
     container_name: jardimdealah
+    volumes:
+      - ./requirements_python.txt:/root/requirements_python.txt:ro
     networks:
       - cluster_net
   stellamaris:
     build: ./stellamaris
     container_name: stellamaris
+    volumes:
+      - ./requirements_python.txt:/root/requirements_python.txt:ro
     networks:
       - cluster_net
   lagamar:
@@ -27,6 +33,8 @@ services:
     ports:
       - "8888:8888"
       - "2222:22"
+    volumes:
+      - ./requirements_python.txt:/root/requirements_python.txt:ro
     networks:
       - cluster_net
 

@@ -8,6 +8,9 @@ export HADOOP_HOME=/opt/hadoop
 export SPARK_HOME=/opt/spark
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$SPARK_HOME/bin
 
+# Instalando pacotes python, conforme interesse do usuário
+pip install -r /root/requirements_python.txt
+
 # Ativa o serviço SSH
 service ssh start
 

@@ -4,7 +4,7 @@
 # Portas Expostas: 2222 (SSH), 8888 (Jupyter)
 # Recursos Spark/Elasticsearch: Ambiente interativo para submissão de jobs Spark
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,16 +12,20 @@ ENV SPARK_VERSION=3.0.1
 ENV HADOOP_VERSION=3.3.6
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
-ENV PYSPARK_PYTHON=python3.6
+ENV PYSPARK_PYTHON=python3
 ENV ELASTIC_VERSION=8.1.3
 
 # Instala dependências essenciais
 RUN apt-get update && \
-    apt-get install -y openjdk-11-jdk wget curl ssh net-tools python3.6 python3-pip unzip gnupg netcat && \
-    ln -sf /usr/bin/python3.6 /usr/bin/python && \
-    ln -sf /usr/bin/python3.6 /usr/bin/python3 && \
-    python3.6 -m pip install --upgrade pip && \
-    pip install pyspark==3.0.1 jupyter
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl ssh net-tools python3 python3-pip unzip gnupg netcat && \
+    ln -sf /usr/bin/python3 /usr/bin/python && \
+    ln -sf /usr/bin/python3 /usr/bin/python3 && \
+    python3 -m pip install --upgrade pip && \
+    pip3 install pyspark==3.0.1 jupyter
+
+# Copiando o arquivo que orienta quais pacotes python devem ser instalados
+COPY requirements_python.txt /root/requirements_python.txt
+RUN pip3 install --no-cache-dir -r /root/requirements_python.txt
 
 # Instala Spark
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
