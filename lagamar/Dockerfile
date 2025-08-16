@@ -76,8 +76,12 @@ COPY sandbox-tests/indexa-dbB-spark-es.py /root/sandbox-tests/indexa-dbB-spark-e
 COPY sandbox-tests/consulta-es.json /root/sandbox-tests/consulta-es.json
 COPY sandbox-tests/indexa-dbB-spark-es.ipynb /root/sandbox-tests/indexa-dbB-spark-es.ipynb
 
+# Copia .bashrc com variaveis de ambiente para forçar a definição delas
+COPY .bashrc /root/.bashrc
+RUN chmod 644 /root/.bashrc
+
 # Expõe portas para SSH e Jupyter
-EXPOSE 2222 8888
+EXPOSE 2222 8888 4040 4041 4042
 
 # Comando de entrada com Jupyter e SSH em paralelo
 CMD service ssh start && jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --no-browser --notebook-dir=/root

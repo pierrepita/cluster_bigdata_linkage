@@ -8,6 +8,9 @@ services:
       - "9200:9200"
       - "9870:9870"
       - "9000:9000"
+      - "4040:4040"
+      - "4041:4041"
+      - "4042:4042"
     volumes:
       - ./requirements_python.txt:/root/requirements_python.txt:ro
     networks:
@@ -34,6 +37,7 @@ services:
       - "2222:22"
     volumes:
       - ./requirements_python.txt:/root/requirements_python.txt:ro
+      - ./entrada/:/root/entrada/:rw
     networks:
       - cluster_net
 

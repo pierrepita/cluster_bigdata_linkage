@@ -90,5 +90,16 @@ su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HAD
 
 /usr/sbin/sshd -D
 
+# Rodando de novo (just in case). Nao estava surtindo efeito até aqui. 
+# Garantindo que as variaveis de ambiente estarão no .bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
+echo 'export SPARK_HOME=/opt/spark' >> /root/.bashrc
+echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin' >> /root/.bashrc
+source /root/.bashrc
+
 # Mantém o container vivo
 tail -f /dev/null

@@ -91,7 +91,7 @@ RUN apt-get install -y openssh-server && \
     echo 'root:01' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
-EXPOSE 22 8081
+EXPOSE 22 8081 4040 4041 4042
 
 CMD ["/usr/sbin/sshd", "-D"]
 
