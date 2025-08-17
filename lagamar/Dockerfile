@@ -17,7 +17,7 @@ ENV ELASTIC_VERSION=8.1.3
 
 # Instala dependências essenciais
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl ssh net-tools python3 python3-pip unzip gnupg netcat && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     python3 -m pip install --upgrade pip && \
     pip3 install pyspark==3.0.1 jupyter
@@ -79,6 +79,9 @@ COPY sandbox-tests/indexa-dbB-spark-es.ipynb /root/sandbox-tests/indexa-dbB-spar
 # Copia .bashrc com variaveis de ambiente para forçar a definição delas
 COPY .bashrc /root/.bashrc
 RUN chmod 644 /root/.bashrc
+
+# Criando pasta .ssh para permitir copia de chaves ssh github
+RUN mkdir /root/.ssh
 
 # Expõe portas para SSH e Jupyter
 EXPOSE 2222 8888 4040 4041 4042

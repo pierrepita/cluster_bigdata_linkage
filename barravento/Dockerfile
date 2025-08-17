@@ -16,7 +16,7 @@ ENV ELASTIC_VERSION=8.1.3 \
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openssh-server openjdk-11-jdk curl wget python3 python3-venv python3-distutils python3-pip unzip net-tools netcat && \
+    apt-get install -y software-properties-common git p7zip-full nano openssh-server openjdk-11-jdk curl wget rsync inetutils-ping python3 python3-venv python3-distutils python3-pip unzip net-tools netcat && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     pip3 install pyspark==3.0.1
 
