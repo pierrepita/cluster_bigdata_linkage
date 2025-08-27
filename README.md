@@ -144,10 +144,6 @@ ssh root@localhost -p 2222  # senha: 01
 | **Pequeno**<br>(2 vCPU / 8 GB Master, 4 vCPU / 16 GB Worker) | ```bash<br>SPARK_MASTER_HOST=barravento<br>SPARK_MASTER_PORT=7077<br>SPARK_MASTER_WEBUI_PORT=8080<br>JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64<br>HADOOP_HOME=/opt/hadoop<br>SPARK_HOME=/opt/spark<br>SPARK_LOCAL_DIRS=/tmp/spark<br>``` | ```bash<br>SPARK_WORKER_CORES=4<br>SPARK_WORKER_MEMORY=14g<br>SPARK_WORKER_PORT=7078<br>SPARK_WORKER_WEBUI_PORT=8081<br>SPARK_LOCAL_DIRS=/tmp/spark<br>``` | ```properties<br>spark.master spark://barravento:7077<br>spark.hadoop.fs.defaultFS hdfs://barravento:9000<br>spark.sql.adaptive.enabled=true<br>spark.sql.adaptive.skewJoin.enabled=true<br>spark.sql.files.maxPartitionBytes=64m<br>spark.sql.shuffle.partitions=12<br>spark.sql.autoBroadcastJoinThreshold=50m<br>spark.sql.broadcastTimeout=600<br>spark.serializer=org.apache.spark.serializer.KryoSerializer<br>``` |
 | **Médio**<br>(4 vCPU / 16 GB Master, 8 vCPU / 32 GB Worker) | *mesmo conteúdo fixo do Master acima* | ```bash<br>SPARK_WORKER_CORES=8<br>SPARK_WORKER_MEMORY=30g<br>SPARK_WORKER_PORT=7078<br>SPARK_WORKER_WEBUI_PORT=8081<br>SPARK_LOCAL_DIRS=/tmp/spark<br>``` | ```properties<br>spark.sql.shuffle.partitions=48<br>spark.sql.autoBroadcastJoinThreshold=100m<br>``` *(demais configs idênticas ao Pequeno)* |
 | **Grande**<br>(4–8 vCPU / 16–32 GB Master, 16 vCPU / 64 GB Worker) | *mesmo conteúdo fixo do Master acima* | ```bash<br>SPARK_WORKER_CORES=16<br>SPARK_WORKER_MEMORY=60g<br>SPARK_WORKER_PORT=7078<br>SPARK_WORKER_WEBUI_PORT=8081<br>SPARK_LOCAL_DIRS=/tmp/spark<br>``` | ```properties<br>spark.sql.shuffle.partitions=72<br>spark.sql.autoBroadcastJoinThreshold=200m<br>spark.sql.broadcastTimeout=900<br>``` *(demais configs idênticas ao Pequeno)* |
-
----
-
-
 ---
 
 ## 5. Interfaces Web Disponíveis
