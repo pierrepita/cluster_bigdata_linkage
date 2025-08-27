@@ -84,16 +84,63 @@ ssh root@localhost -p 2222  # senha: 01
 
 ## 3. Nós do Cluster
 
-| Nome do Nó     | Papel            | Serviços                 | Memória | Núcleos |
-|----------------|------------------|--------------------------|---------|---------|
-| barravento     | Master            | Spark Master, HDFS NN, Elasticsearch Master | 5 GB    | 2       |
-| jardimdealah   | Worker 1          | Spark Worker, HDFS DN    | 1 GB    | 2       |
-| stellamaris    | Worker 2          | Spark Worker, HDFS DN    | 1 GB    | 2       |
-| lagamar        | Submissor + Jupyter | Jupyter Notebook, Spark submit | 2 GB    | 1       |
+| Nome do Nó     | Papel            | Serviços                 |
+|----------------|------------------|--------------------------|
+| barravento     | Master            | Spark Master, HDFS NN, Elasticsearch Master |
+| jardimdealah   | Worker 1          | Spark Worker, HDFS DN    |
+| stellamaris    | Worker 2          | Spark Worker, HDFS DN    |
+| lagamar        | Submissor + Jupyter | Jupyter Notebook, Spark submit |
+
+---
+## 4. Configuração do Spark Standalone Cluster
+
+### 4.1 Fixo (todos os cenários)
+
+| Variável / Configuração        | Valor / Explicação                                                                 |
+|--------------------------------|-------------------------------------------------------------------------------------|
+| **SPARK_MASTER_HOST**          | `barravento` (hostname do Master)                                                   |
+| **SPARK_MASTER_PORT**          | `7077` (porta do Master)                                                            |
+| **spark.sql.adaptive.enabled** | `true` – Adaptive Query Execution ligado                                            |
+| **spark.sql.adaptive.skewJoin.enabled** | `true` – Corrige joins com skew automaticamente                             |
+| **spark.sql.files.maxPartitionBytes** | `64m` – Máximo de dados por partição de leitura                               |
+| **spark.sql.broadcastTimeout** | `600` – Timeout (segundos) para broadcast de tabelas pequenas                       |
+| **SPARK_LOCAL_DIRS**           | `/tmp/spark` (diretório local para shuffle/cache temporário)                        |
+| **SPARK_LOG_DIR**              | `/opt/spark/logs` (logs locais; event logs podem ir para HDFS via `spark.eventLog.dir`) |
 
 ---
 
-## 4. Interfaces Web Disponíveis
+### 4.2 Variável por Cenário
+
+| Cenário   | Master (barravento) | Worker (stellamaris / jardimdealah) | Executors por Worker                 | SQL Shuffle / Broadcast                  |
+|-----------|----------------------|--------------------------------------|--------------------------------------|-------------------------------------------|
+| **Pequeno** | 2 vCPU / 8 GB RAM  | 4 vCPU / 16 GB RAM                  | 1 executor, 3 cores, 12 GB RAM        | `spark.sql.shuffle.partitions=12`<br>`spark.sql.autoBroadcastJoinThreshold=50m` |
+| **Médio**   | 4 vCPU / 16 GB RAM | 8 vCPU / 32 GB RAM                  | 2 executores, 4 cores cada, 12 GB RAM | `spark.sql.shuffle.partitions=48`<br>`spark.sql.autoBroadcastJoinThreshold=100m` |
+| **Grande**  | 4–8 vCPU / 16–32 GB RAM | 16 vCPU / 64 GB RAM             | 3 executores, 5 cores cada, 16 GB RAM | `spark.sql.shuffle.partitions=72`<br>`spark.sql.autoBroadcastJoinThreshold=200m` |
+
+---
+
+### 4.3 Explicação das principais variáveis
+
+- **SPARK_WORKER_CORES**: nº total de cores que cada Worker anuncia ao Master.  
+- **SPARK_WORKER_MEMORY**: memória total que cada Worker oferece (reserve ~10% para SO/serviços).  
+- **--executor-cores**: nº de cores usados por cada executor.  
+- **--executor-memory**: heap de memória de cada executor (exclui overhead).  
+- **spark.sql.shuffle.partitions**: nº de partições após operações de shuffle (ideal ≈ 2–3× total de cores do cluster).  
+- **spark.sql.autoBroadcastJoinThreshold**: limite de tamanho para o Spark usar broadcast join (tabelas menores que esse valor são replicadas para todos executores).  
+
+---
+
+### 4.4 Regras práticas
+
+- **Master (barravento)** nunca executa tasks; precisa de memória suficiente para o **driver** (8–32 GB).  
+- **Workers** dedicam a maior parte da RAM/CPU aos executores (reserve sempre 1 core + ~2 GB para o SO).  
+- O nº de **executores por Worker** e seus recursos variam conforme o cenário.  
+- Ajuste `spark.sql.shuffle.partitions` sempre proporcional ao total de cores do cluster.  
+
+
+---
+
+## 5. Interfaces Web Disponíveis
 
 | Serviço         | URL                              |
 |-----------------|----------------------------------|
@@ -104,7 +151,7 @@ ssh root@localhost -p 2222  # senha: 01
 
 ---
 
-## 5. Comandos úteis
+## 6. Comandos úteis
 
 ### Acessar o node submissor
 

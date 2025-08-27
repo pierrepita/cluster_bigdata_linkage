@@ -1,0 +1,27 @@
+<!--  hdfs-site.xml for NameNode and DataNode -->
+<configuration>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:/opt/hadoop/hdfs/namenode</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:/opt/hadoop/hdfs/datanode</value>
+  </property>
+
+  <property>
+    <name>dfs.replication</name>
+    <value>2</value>
+  </property>
+
+  <property>
+    <name>dfs.permissions</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.rpc-address</name>
+    <value>barravento:9000</value>
+  </property>
+</configuration>

@@ -6,6 +6,7 @@ export SPARK_HOME=/opt/spark
 # Host do master
 export SPARK_MASTER_HOST=barravento
 export SPARK_MASTER_PORT=7077
+export PYSPARK_SUBMIT_ARGS='--master spark://barravento:7077 --deploy-mode client --packages org.elasticsearch:elasticsearch-spark-30_2.12:8.1.3 pyspark-shell'
 
 # Aponta para o master
 export SPARK_WORKER_CORES=2
