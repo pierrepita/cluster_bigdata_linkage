@@ -1,7 +1,7 @@
 # Conteúdo de exemplo para jvm.options no nó barravento
 # Heap Size
--Xms1g
--Xmx1g
+-Xms6g
+-Xmx6g
 
 # GC Settings - Use G1GC (bom equilíbrio entre Throughput e Pausa)
 -XX:+UseG1GC
