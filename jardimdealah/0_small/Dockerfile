@@ -1,9 +1,9 @@
-# Dockerfile do nó Worker 1 [jardimdealah]
-# Nome: jardimdealah
+# Dockerfile do nó Worker 2 [stellamaris]
+# Nome: stellamaris
 # Serviços: Spark Worker, Datanode, Elasticsearch Worker
-# Portas Expostas: 8081
+# Portas Expostas: 8082
 # Recursos Spark/Elasticsearch: 2 executores, 2 núcleos cada, 1GB RAM
-FROM ubuntu:20.04
+FROM ubuntu:26.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,11 +12,11 @@ ENV HADOOP_VERSION=3.3.6
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 ENV PYSPARK_PYTHON=python3
-ENV ELASTIC_VERSION=8.1.3
+ENV ELASTIC_VERSION=7.15.2
 
 # Instala dependências básicas, Java, Python 3.6, pip, e ferramentas auxiliares
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     python3 -m pip install --upgrade pip && \
     pip3 install pyspark==3.0.1
@@ -43,12 +43,6 @@ RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/had
     mv hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
 
-# O hdfs precisa desta diretiva pra evitar o erro: 
-# "2.063 ERROR: JAVA_HOME is not set and could not be found."
-# COPY set-java-home-hdfs.sh /root/set-java-home-hdfs.sh
-# RUN chmod +x /root/set-java-home-hdfs.sh && /root/set-java-home-hdfs.sh
-RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
-
 # Instala Elasticsearch
 ## O ES demanda instalação 17 do Java
 RUN apt-get update && \
@@ -64,9 +58,9 @@ RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${EL
 COPY elasticsearch/elasticsearch.yml /opt/elasticsearch/config/elasticsearch.yml
 COPY elasticsearch/jvm.options /opt/elasticsearch/config/jvm.options
 
-# Instala elasticsearch-hadoop jar compatível
-RUN mkdir -p /opt/elasticsearch/lib && \
-    wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -P /opt/elasticsearch/lib
+# Baixando o conector elasticsearch-hadoop para que o Spark possa interagir corretamente com o Elasticsearch
+# Isso deve permitir um melhor controle de versão local. 
+RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -o /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
 
 # Configura memória para Elasticsearch
 RUN echo "-Xms1g\n-Xmx1g" > /opt/elasticsearch/config/jvm.options.d/memory.options

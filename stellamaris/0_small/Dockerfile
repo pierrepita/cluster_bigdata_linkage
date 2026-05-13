@@ -3,7 +3,7 @@
 # Serviços: Spark Worker, Datanode, Elasticsearch Worker
 # Portas Expostas: 8082
 # Recursos Spark/Elasticsearch: 2 executores, 2 núcleos cada, 1GB RAM
-FROM ubuntu:20.04
+FROM ubuntu:26.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,11 +12,11 @@ ENV HADOOP_VERSION=3.3.6
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 ENV PYSPARK_PYTHON=python3
-ENV ELASTIC_VERSION=8.1.3
+ENV ELASTIC_VERSION=7.15.2
 
 # Instala dependências básicas, Java, Python 3.6, pip, e ferramentas auxiliares
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     python3 -m pip install --upgrade pip && \
     pip3 install pyspark==3.0.1

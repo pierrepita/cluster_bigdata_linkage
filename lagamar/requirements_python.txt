@@ -3,8 +3,7 @@ urllib3==1.26.20
 chardet==5.0.0
 charset-normalizer==2.0.12
 requests==2.27.1
-elastic-transport==8.10.0
-elasticsearch==8.11.1
+elasticsearch==9.1.1
 Cython==3.0.12
 tzdata==2025.2
 numpy==1.24.4

@@ -3,20 +3,20 @@
 # Serviços: Spark Master, Namenode, Datanode, Elasticsearch Master
 # Portas Expostas: 7077, 8080, 9000, 9870, 9200
 # Recursos Spark/Elasticsearch: Spark Driver: 2 núcleos, 2GB RAM; ES Master: 2GB JVM
-FROM ubuntu:20.04
+FROM ubuntu:26.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 
 # Versões
-ENV ELASTIC_VERSION=8.1.3 \
+ENV ELASTIC_VERSION=7.15.2 \
     SPARK_VERSION=3.0.1 \
     HADOOP_VERSION=3.3.6 
 
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openssh-server openjdk-11-jdk curl wget rsync inetutils-ping python3 python3-venv python3-distutils python3-pip unzip net-tools netcat && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     pip3 install pyspark==3.0.1
 
