@@ -8,7 +8,7 @@ FROM ubuntu:26.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive
-ENV SPARK_VERSION=3.0.1
+ENV SPARK_VERSION=4.1.1
 ENV HADOOP_VERSION=3.3.6
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
@@ -17,10 +17,9 @@ ENV ELASTIC_VERSION=7.15.2
 
 # Instala dependências essenciais
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    python3 -m pip install --break-system-packages --upgrade pip && \
-    pip3 install --break-system-packages pyspark==3.0.1 jupyter
+    pip3 install --break-system-packages pyspark==4.1.1 jupyter
 
 # Copiando o arquivo que orienta quais pacotes python devem ser instalados
 COPY requirements_python.txt /root/requirements_python.txt
