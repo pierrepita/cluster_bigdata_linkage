@@ -19,12 +19,12 @@ ENV ELASTIC_VERSION=7.15.2
 RUN apt-get update && \
     apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    python3 -m pip install --upgrade pip && \
-    pip3 install pyspark==3.0.1 jupyter
+    python3 -m pip install --break-system-packages --upgrade pip && \
+    pip3 install --break-system-packages pyspark==3.0.1 jupyter
 
 # Copiando o arquivo que orienta quais pacotes python devem ser instalados
 COPY requirements_python.txt /root/requirements_python.txt
-RUN pip3 install --no-cache-dir -r /root/requirements_python.txt
+RUN pip3 install --break-system-packages --no-cache-dir -r /root/requirements_python.txt
 
 # Instala Spark
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \

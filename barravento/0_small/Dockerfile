@@ -18,11 +18,11 @@ ENV ELASTIC_VERSION=7.15.2 \
 RUN apt-get update && \
     apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    pip3 install pyspark==3.0.1
+    pip3 install --break-system-packagespyspark==3.0.1
 
 # Copiando o arquivo que orienta quais pacotes python devem ser instalados
 COPY requirements_python.txt /root/requirements_python.txt
-RUN pip3 install --no-cache-dir -r /root/requirements_python.txt
+RUN pip3 install --break-system-packages--no-cache-dir -r /root/requirements_python.txt
 
 # Instalação do Spark
 # Garantindo versão 3.0.1 do Spark para versão homologada do linkage CIDACS-RL e Atyimo
