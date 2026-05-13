@@ -12,7 +12,7 @@ export SPARK_MASTER_PORT=7077
 
 # Definições do worker ao negociar com o master
 export SPARK_WORKER_CORES=4
-export SPARK_WORKER_MEMORY=14g
+export SPARK_WORKER_MEMORY=16g
 export SPARK_WORKER_PORT=7078
 export SPARK_WORKER_WEBUI_PORT=8081
 

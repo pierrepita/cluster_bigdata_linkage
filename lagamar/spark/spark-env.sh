@@ -10,7 +10,7 @@ export PYSPARK_SUBMIT_ARGS='--master spark://barravento:7077 --deploy-mode clien
 
 # Aponta para o master
 export SPARK_WORKER_CORES=2
-export SPARK_WORKER_MEMORY=1g
+export SPARK_WORKER_MEMORY=20g
 
 # Diretório onde os logs e os dados temporários do worker ficarão
 export SPARK_WORKER_DIR=/opt/spark/work
