@@ -3,12 +3,11 @@
 # Serviços: Spark Submit, Jupyter, Datanode
 # Portas Expostas: 2222 (SSH), 8888 (Jupyter)
 # Recursos Spark/Elasticsearch: Ambiente interativo para submissão de jobs Spark
-
-FROM ubuntu:26.04
+FROM ubuntu:22.04
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive
-ENV SPARK_VERSION=4.1.1
+ENV SPARK_VERSION=3.5.3
 ENV HADOOP_VERSION=3.3.6
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
@@ -17,14 +16,14 @@ ENV ELASTIC_VERSION=7.15.2
 
 # Instala dependências essenciais
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    pip3 install --break-system-packages pyspark==4.1.1 jupyter
+    pip3 install pyspark==3.5.3 jupyter
 
 # Copiando o arquivo que orienta quais pacotes python devem ser instalados
 ENV GDAL_CONFIG=/usr/bin/gdal-config
 COPY requirements_python.txt /root/requirements_python.txt
-RUN pip3 install --break-system-packages --ignore-installed --no-cache-dir -r /root/requirements_python.txt
+RUN pip3 install --ignore-installed --no-cache-dir -r /root/requirements_python.txt
 
 # Instala Spark
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.tgz && \

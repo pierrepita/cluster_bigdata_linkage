@@ -3,26 +3,26 @@
 # Serviços: Spark Master, Namenode, Datanode, Elasticsearch Master
 # Portas Expostas: 7077, 8080, 9000, 9870, 9200
 # Recursos Spark/Elasticsearch: Spark Driver: 2 núcleos, 2GB RAM; ES Master: 2GB JVM
-FROM ubuntu:26.04
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH=$PATH:/opt/spark/bin:/opt/hadoop/bin
 
 # Versões
 ENV ELASTIC_VERSION=7.15.2 \
-    SPARK_VERSION=4.1.1 \
+    SPARK_VERSION=3.5.3 \
     HADOOP_VERSION=3.3.6 
 
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk openjdk-11-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
     ln -sf /usr/bin/python3 /usr/bin/python
 
 # Copiando o arquivo que orienta quais pacotes python devem ser instalados
 ENV GDAL_CONFIG=/usr/bin/gdal-config
 COPY requirements_python.txt /root/requirements_python.txt
-RUN pip3 install --break-system-packages --ignore-installed --no-cache-dir -r /root/requirements_python.txt
+RUN pip3 install --ignore-installed --no-cache-dir -r /root/requirements_python.txt
 
 # Instalação do Spark
 # Garantindo versão 3.0.1 do Spark para versão homologada do linkage CIDACS-RL e Atyimo

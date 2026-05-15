@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 export HADOOP_HOME=/opt/hadoop
 export SPARK_HOME=/opt/spark
@@ -33,9 +33,9 @@ wait_for_host barravento 7077
 
 ## Definindo o JAVA_HOME e HADOOP_HOME para o usuário hadoop
 # Garantindo que as variaveis de ambiente estarão no .bashrc
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
 echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
 echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
 echo 'export SPARK_HOME=/opt/spark' >> /root/.bashrc
 echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
@@ -92,9 +92,9 @@ su -s /bin/bash hadoop -c "env JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 $HAD
 
 # Rodando de novo (just in case). Nao estava surtindo efeito até aqui. 
 # Garantindo que as variaveis de ambiente estarão no .bashrc
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
 echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /root/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
 echo 'export ES_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /root/.bashrc
 echo 'export SPARK_HOME=/opt/spark' >> /root/.bashrc
 echo 'export HADOOP_HOME=/opt/hadoop' >> /root/.bashrc
