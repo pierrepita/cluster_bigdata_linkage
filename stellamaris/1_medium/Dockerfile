@@ -36,7 +36,7 @@ RUN chmod +x /opt/spark/conf/spark-env.sh
 
 # Instala Hadoop
 ## É necessário criar um usuário hadoop para iniciar o hadoop
-RUN groupadd -g 2000 hadoop && useradd -u 2000 -g hadoop -m hadoop
+RUN groupadd -g 5000 hadoop && useradd -u 5000 -g hadoop -m hadoop
 
 RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xzf hadoop-${HADOOP_VERSION}.tar.gz && \
@@ -48,7 +48,7 @@ RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/had
 # RUN apt-get update && \
 #     apt-get install -y openjdk-17-jdk
 ## É necessário criar um usuário elastic para iniciar o elastic
-RUN groupadd -g 1000 elastic && useradd -u 1000 -g elastic -m elastic
+RUN groupadd -g 5001 elastic && useradd -u 5001 -g elastic -m elastic
 # Elasticsearch
 RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz && \
     tar -xzf elasticsearch-${ELASTIC_VERSION}-linux-x86_64.tar.gz && \
@@ -60,7 +60,7 @@ COPY elasticsearch/jvm.options /opt/elasticsearch/config/jvm.options
 
 # Baixando o conector elasticsearch-hadoop para que o Spark possa interagir corretamente com o Elasticsearch
 # Isso deve permitir um melhor controle de versão local. 
-RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -o /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
+RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -O /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
 
 # Configura memória para Elasticsearch
 RUN echo "-Xms1g\n-Xmx1g" > /opt/elasticsearch/config/jvm.options.d/memory.options
@@ -70,7 +70,7 @@ COPY elasticsearch/elasticsearch.yml /opt/elasticsearch/config/elasticsearch.yml
 
 # Baixando o conector elasticsearch-hadoop para que o Spark possa interagir corretamente com o Elasticsearch
 # Isso deve permitir um melhor controle de versão local. 
-RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -o /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
+RUN wget https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/${ELASTIC_VERSION}/elasticsearch-hadoop-${ELASTIC_VERSION}.jar -O /opt/spark/jars/elasticsearch-hadoop-${ELASTIC_VERSION}.jar
 
 # Configura Spark
 COPY spark/spark-defaults.conf /opt/spark/conf/spark-defaults.conf
