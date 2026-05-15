@@ -17,7 +17,7 @@ ENV ELASTIC_VERSION=7.15.2
 
 # Instala dependências essenciais
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     pip3 install --break-system-packages pyspark==4.1.1 jupyter
 

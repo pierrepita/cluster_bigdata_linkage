@@ -16,7 +16,7 @@ ENV ELASTIC_VERSION=7.15.2 \
 # Instalação das dependências básicas
 # Principais aspectos: Versão do JAVA e do Python
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
     ln -sf /usr/bin/python3 /usr/bin/python
 
 # Copiando o arquivo que orienta quais pacotes python devem ser instalados

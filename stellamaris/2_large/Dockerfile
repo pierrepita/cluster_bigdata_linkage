@@ -16,7 +16,7 @@ ENV ELASTIC_VERSION=7.15.2
 
 # Instala dependências básicas, Java, Python 3.6, pip, e ferramentas auxiliares
 RUN apt-get update && \
-    apt-get install -y software-properties-common git p7zip-full nano openjdk-11-jdk openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
+    apt-get install -y software-properties-common git p7zip-full nano openjdk-17-jdk wget curl rsync inetutils-ping ssh net-tools python3 python3-pip unzip gnupg netcat-openbsd gdal-bin libgdal-dev build-essential cmake pkg-config rustc cargo && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     pip3 install --break-system-packages pyspark==4.1.1
 
@@ -47,7 +47,7 @@ RUN wget https://downloads.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/had
 # "2.063 ERROR: JAVA_HOME is not set and could not be found."
 # COPY set-java-home-hdfs.sh /root/set-java-home-hdfs.sh
 # RUN chmod +x /root/set-java-home-hdfs.sh && /root/set-java-home-hdfs.sh
-RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
+RUN sed -i '2i export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' /opt/hadoop/sbin/start-dfs.sh
 
 # Instala Elasticsearch
 ## O ES demanda instalação 17 do Java
